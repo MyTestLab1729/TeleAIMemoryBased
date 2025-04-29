@@ -5,6 +5,18 @@ from gemini_client import get_gemini_response
 from config import MAX_TOKENS
 from utils import count_tokens, trim_history
 from text_to_image import generate_image  # Import the image generation function
+import time  # Import time for simulating delays
+
+# Default instruction to prepend to user prompts
+DEFAULT_PROMPT = (
+    "Always reply in the user's language. And act as a girlfriend/boyfriend according to the user's preferences. "
+    "Make your responses compatible with Telegram by using emojis, "
+    "bullet points, and formatting to make the response attractive and engaging."
+    "Don't reply like a robot prepending the predefined instruction. "
+    "Instead, use the instruction to guide your response and make it more engaging. "
+    "Answer in short if user not specifies for long answer. "
+    "Don't use the instruction in your response and add any meta-data give reponse directly. "
+)
 
 def handle_messages(bot, message):
     chat_id = str(message.chat.id)
@@ -25,6 +37,10 @@ def handle_messages(bot, message):
             return
 
         try:
+            # Indicate that the bot is generating an image
+            bot.send_chat_action(chat_id, "upload_photo")
+            time.sleep(1)  # Simulate a short delay for better UX
+
             # Call the generate_image function to create the image
             image_path = generate_image(prompt)
             with open(image_path, "rb") as image_file:
@@ -39,12 +55,22 @@ def handle_messages(bot, message):
     history = get_history(chat_id)
     history.append({"role": "user", "content": user_text})
 
+    # Create a temporary prompt with the default instruction
+    full_prompt = f"{DEFAULT_PROMPT}\n\n{user_text}"
+
     # Trim history if it exceeds the token limit
     if count_tokens(history) > MAX_TOKENS:
         history = trim_history(history, MAX_TOKENS)
 
-    # Get the Gemini response
-    reply = get_gemini_response(history)
+    # Indicate that the bot is typing
+    bot.send_chat_action(chat_id, "typing")
+    time.sleep(1)  # Simulate a short delay for better UX
+
+    # Send the modified prompt to Gemini without altering the history
+    temp_history = history[:-1] + [{"role": "user", "content": full_prompt}]
+    reply = get_gemini_response(temp_history)
+
+    # Add the user's original input and Gemini's reply to the history
     history.append({"role": "model", "content": reply})
 
     # Save the conversation history
