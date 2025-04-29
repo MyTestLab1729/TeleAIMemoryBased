@@ -2,3 +2,5 @@
 pyTelegramBotAPI
 google-generativeai
 tiktoken
+dotenv
+Pillow
