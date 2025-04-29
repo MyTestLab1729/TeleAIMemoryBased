@@ -1,10 +1,19 @@
-# --- gemini_client.py ---
 import google.generativeai as genai
 from config import GEMINI_API_KEY
 
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
+
+def convert_to_gemini_format(history):
+    return [
+        {
+            "role": m["role"],
+            "parts": [{"text": m["content"]}]
+        }
+        for m in history
+    ]
 
 def get_gemini_response(history):
-    response = model.generate_content(history)
+    formatted = convert_to_gemini_format(history)
+    response = model.generate_content(formatted)
     return response.text
