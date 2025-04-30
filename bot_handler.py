@@ -1,6 +1,6 @@
 # --- bot_handler.py ---
 import os
-from db_manager import get_history, add_message, clear_history
+from db_manager import get_history, add_message, clear_history,initialize_user_db
 from gemini_client import get_gemini_response
 from config import MAX_TOKENS
 from utils import count_tokens, trim_history
@@ -56,6 +56,7 @@ def handle_messages(bot, message):
         return
 
     # Handle normal text prompts (Gemini text response)
+    initialize_user_db(chat_id)  # <-- ensure the DB and 'history' table exist
     history = get_history(chat_id)
     history.append({"role": "user", "content": user_text})
 
