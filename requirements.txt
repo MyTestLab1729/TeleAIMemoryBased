@@ -1,6 +1,5 @@
 # --- requirements.txt ---
 pyTelegramBotAPI
-google-generativeai
 tiktoken
 dotenv
 Pillow
