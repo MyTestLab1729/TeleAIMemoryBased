@@ -1,5 +1,4 @@
 # --- utils.py ---
-import tiktoken  # Or an equivalent tokenizer if Gemini-specific isn't available
 
 # Dummy token counter for now
 

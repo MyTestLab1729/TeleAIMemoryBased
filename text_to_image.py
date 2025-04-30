@@ -1,8 +1,6 @@
 import requests
 import json
 import base64
-from PIL import Image
-from io import BytesIO
 from config import GEMENI_API_KEY
 
 url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key={GEMENI_API_KEY}"

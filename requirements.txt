@@ -1,5 +1,3 @@
 # --- requirements.txt ---
 pyTelegramBotAPI
-tiktoken
 dotenv
-Pillow
